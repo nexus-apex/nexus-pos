@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Sales | NexusPOS{% endblock %}
+{% block page_title %}Sales{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search sales...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Payment Method</option>
+      <option value="cash" {% if status_filter == 'cash' %}selected{% endif %}>Cash</option>
+      <option value="card" {% if status_filter == 'card' %}selected{% endif %}>Card</option>
+      <option value="upi" {% if status_filter == 'upi' %}selected{% endif %}>UPI</option>
+      <option value="wallet" {% if status_filter == 'wallet' %}selected{% endif %}>Wallet</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/sales/create/" class="btn btn-primary">+ New Sale</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Receipt Number</th><th>Customer Name</th><th>Total</th><th>Discount</th><th>Tax</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/sales/{{ r.pk }}/edit/"><strong>{{ r.receipt_number }}</strong></a></td>
+        <td>{{ r.customer_name|default:"-" }}</td>
+        <td>{{ r.total|floatformat:2 }}</td>
+        <td>{{ r.discount|floatformat:2 }}</td>
+        <td>{{ r.tax|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/sales/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/sales/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No sales found.</p>
+    <a href="/sales/create/" class="btn btn-primary" style="margin-top:1rem">Create Sale</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
