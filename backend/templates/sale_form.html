@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Sale | NexusPOS{% endblock %}
+{% block page_title %}{% if editing %}Edit Sale{% else %}New Sale{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Receipt Number</label>
+        <input type="text" name="receipt_number" value="{{ record.receipt_number|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Customer Name</label>
+        <input type="text" name="customer_name" value="{{ record.customer_name|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total</label>
+        <input type="number" step="0.01" name="total" value="{{ record.total|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Discount</label>
+        <input type="number" step="0.01" name="discount" value="{{ record.discount|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tax</label>
+        <input type="number" step="0.01" name="tax" value="{{ record.tax|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select name="payment_method">
+          <option value="cash" {% if record.payment_method == 'cash' %}selected{% endif %}>Cash</option>
+          <option value="card" {% if record.payment_method == 'card' %}selected{% endif %}>Card</option>
+          <option value="upi" {% if record.payment_method == 'upi' %}selected{% endif %}>UPI</option>
+          <option value="wallet" {% if record.payment_method == 'wallet' %}selected{% endif %}>Wallet</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ record.date|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Cashier</label>
+        <input type="text" name="cashier" value="{{ record.cashier|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Items Count</label>
+        <input type="number" name="items_count" value="{{ record.items_count|default:'0' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Sale</button>
+      <a href="/sales/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
