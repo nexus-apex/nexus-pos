@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusPOS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Posproducts</div>
+    <div class="stat-value">{{ posproduct_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Sales</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ sale_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Poscustomers</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ poscustomer_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Price</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ posproduct_total_price|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Posproducts</h3>
+    <a href="/posproducts/create/" class="btn btn-primary btn-sm">+ New POSProduct</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Sku</th><th>Category</th><th>Price</th><th>Cost</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/posproducts/{{ r.pk }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.sku|default:"-" }}</td><td>{{ r.category|default:"-" }}</td><td>{{ r.price|floatformat:2 }}</td><td>{{ r.cost|floatformat:2 }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/posproducts/create/" class="btn btn-primary" style="margin-top:1rem">Create First POSProduct</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
